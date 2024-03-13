@@ -2,6 +2,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<script type="text/javascript" src="./static/jscript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.3.1/fabric.min.js"></script>
 <div class="container-fluid">
      <div class="row flex-nowrap">
     <!-- Left Nav Bar -->
@@ -37,10 +39,6 @@
         </div>
     </div>
 
-
-
-
-
         <!-- Main content -->
         <main role="main" class="col-md-9 col-xl-11 ml-sm-auto px-4">
             <!-- Module Titles -->
@@ -55,464 +53,358 @@
             </div>
 
 
-    <!-- Row for Image Placeholders and Severity Assessment Dropdowns -->
-        <div class="row">
-            <!-- Column for Image Placeholders -->
-            <div class="col-md-8">
-                <div class="row">
-                    <!-- Image Placeholder 1 -->
-                    <div class="col-md-6 mb-3">
-                        <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;">
-                            <img id="imagePlaceholder1" class="border rounded" style="height: 320px;">
+        <!-- Row for Image Placeholders and Severity Assessment Dropdowns -->
+            <div class="row">
+                <!-- Column for Image Placeholders -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <!-- Image Placeholder 1 -->
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;">
+                                <img id="imagePlaceholder1" class="border rounded" style="height: 320px;">
+                            </div>
+                        </div>
+
+                        <!-- Image Placeholder 2 -->
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;">
+                                <img id="imagePlaceholder2" class="border rounded" style="height: 320px;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Divider -->
+                    <hr class="my-2">
+                    <!-- Upload Button -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="imageForm" action="/upload-path/" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-2">
+                                    <input type="file" name="image" accept="image/*" class="form-control" id="imageUpload" onchange="handleImageUpload()">
+                                </div>
+                                <div>
+                                    <button type="button" id="submitImage" class="btn btn-primary" onclick="uploadImage()">1.Submit</button>
+                                    <button type="button" id="editImage" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-secondary" onclick="overlayImage()">2.Edit</button>
+                                    <button type="button" id="processImage" class="btn btn-secondary" onclick="addBKGtoCanvas()">3.Overlay</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Image Placeholder 2 -->
-                    <div class="col-md-6 mb-3">
-                        <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;">
-                            <img id="imagePlaceholder2" class="border rounded" style="height: 320px;">
+                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <div class="annotation-canvas">
+                                            <canvas id="annotation-canvas1" style="border: 1px solid #cccccc;"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <div class="annotation-canvas">
+                                            <canvas id="annotation-canvas2" style="border: 1px solid #cccccc;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Send message</button>
+                            </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                 <!-- Divider -->
-                <hr class="my-2">
-                <!-- Upload Button -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <form id="imageForm" action="/upload-path/" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-2">
-                                <input type="file" name="image" accept="image/*" class="form-control" id="imageUpload" onchange="handleImageUpload()">
-                            </div>
-                            <div>
-                                <button type="button" id="submitImage" class="btn btn-primary" onclick="uploadImage()" disabled>Submit</button>
-                                <button type="button" id="editImage" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-secondary" onclick="overlayImage()" disabled>Edit</button>
-                            </div>
-                        </form>
-                    </div>
+
                 </div>
 
-                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                              <div class="row">
-                                <div class="col-md-6 text-center">
-                                    <div class="annotation-canvas">
-                                        <canvas id="annotation-canvas1" style="border: 1px solid #cccccc;"></canvas>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 text-center">
-                                    <div class="annotation-canvas">
-                                        <canvas id="annotation-canvas2" style="border: 1px solid #cccccc;"></canvas>
-                                    </div>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Send message</button>
-                          </div>
+
+                <!-- Column for Severity Assessment Dropdowns -->
+                <div class="col-md-4">
+
+                    <!-- Stenosis Severity -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="stenosisSeverity">Stenosis Severity</label>
                         </div>
+                        <select class="form-select small-font" id="stenosisSeverity">
+                            <option selected>None</option>
+                            <option value="1">Mild</option>
+                            <option value="2">Moderate</option>
+                            <option value="3">Severe</option>
+                        </select>
                     </div>
+
+                    <!-- Dural/Thecal Sac Compression -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="duralSacCompression">Dural/Thecal Sac Compression</label>
+                        </div>
+                        <select class="form-select small-font" id="duralSacCompression">
+                            <option selected>None</option>
+                            <option value="1">Mild</option>
+                            <option value="2">Moderate</option>
+                            <option value="3">Severe</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="foraminalStenosis">Foraminal Stenosis</label>
+                        </div>
+                        <select class="form-select small-font" id="foraminalStenosis">
+                            <option selected>None</option>
+                            <option value="1">Mild</option>
+                            <option value="2">Moderate</option>
+                            <option value="3">Severe</option>
+                        </select>
+                    </div>
+
+                    <!-- Dural/Thecal Sac Compression -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="discHerniation">Disc Herniation Severity</label>
+                        </div>
+                        <select class="form-select small-font" id="discHerniation">
+                            <option selected>None</option>
+                            <option value="1">Protrusion</option>
+                            <option value="2">Extrusion</option>
+                            <option value="3">Sequestration</option>
+                            <option value="4">Bulge</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="discHerniationType">Disc Herniation Type</label>
+                        </div>
+                        <select class="form-select small-font" id="discHerniationType">
+                            <option selected>None</option>
+                            <option value="1">Central</option>
+                            <option value="2">Left</option>
+                            <option value="3">Right</option>
+                            <option value="4">Bulge</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="annularTear">Annular Tear</label>
+                        </div>
+                        <select class="form-select small-font" id="annularTear">
+                            <option selected>Absent</option>
+                            <option value="1">Present</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="facetHypertrophy">Facet Hypertrophy</label>
+                        </div>
+                        <select class="form-select small-font" id="facetHypertrophy">
+                            <option selected>Absent</option>
+                            <option value="1">Present</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="facetArthropathy">Facet Arthropathy</label>
+                        </div>
+                        <select class="form-select small-font" id="facetArthropathy">
+                            <option selected>Absent</option>
+                            <option value="1">Present</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text fixed-width-label" for="ligamentumFlavumHypertrophy">Ligamentum Flavum Hypertrophy</label>
+                        </div>
+                        <select class="form-select small-font" id="ligamentumFlavumHypertrophy">
+                            <option selected>Absent</option>
+                            <option value="1">Present</option>
+                        </select>
+                    </div>
+
                 </div>
 
             </div>
 
-
-            <!-- Column for Severity Assessment Dropdowns -->
-            <div class="col-md-4">
-
-                <!-- Stenosis Severity -->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="stenosisSeverity">Stenosis Severity</label>
+        <!-- image manipulation -->
+            <div class = "row">
+                <!-- Column for original image -->
+                <div class="col-md-8">
+                    <div class="col-md-6 col-md-3 col-md-2 mb-3 imageCanvas">
+                        
+                        <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;" hidden="hidden">
+                            <img id="imageOrigin" class="border rounded" style="height: 320px;">                                                      
+                            <img id="imageIVD" class="border rounded imageOverlay" style="height: 320px;" hidden="hidden">
+                            <img id="imagePE" class="border rounded imageOverlay" style="height: 320px;" hidden="hidden">
+                            <img id="imageTS" class="border rounded imageOverlay" style="height:320px;" hidden="hidden">
+                            <img id="imageAAP" class="border rounded imageOverlay" style="height: 320px;" hidden="hidden">
+                        </div>
+                        <!-- Test for fabric -->
+                        <div class="col-md-8">
+                            <div class="border rounded d-flex justify-content-center align-items-center" style="height: 640px; width: auto;">
+                                <canvas id="canvas_1" width="640" height="640" style="border:1px solid #ccc"></canvas>
+                            </div>
+                            
+                        </div>
                     </div>
-                    <select class="form-select small-font" id="stenosisSeverity">
-                        <option selected>None</option>
-                        <option value="1">Mild</option>
-                        <option value="2">Moderate</option>
-                        <option value="3">Severe</option>
-                    </select>
                 </div>
-
-                <!-- Dural/Thecal Sac Compression -->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="duralSacCompression">Dural/Thecal Sac Compression</label>
+                
+                <!-- Column for check box and other button-->
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <div class="col-md-2">                    
+                            <input type="checkbox" name="typeCheck" onclick="onlyOne(this)" value="IVD">IVD</input>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="resetBtnIVD" class="btn btn-secondary" onclick="resetBtn(this)" value="IVD" disabled>Reset</button>
+                            <button type="button" id="hideBtnIVD" class="btn btn-secondary" onclick="hideLayer(this)" value="IVD" disabled>hide</button>
+                            <button type="button" id="resetPosIVD" class="btn btn-secondary" onclick="centerPos(this)" value="IVD" disabled>Reset</button>
+                        </div>
                     </div>
-                    <select class="form-select small-font" id="duralSacCompression">
-                        <option selected>None</option>
-                        <option value="1">Mild</option>
-                        <option value="2">Moderate</option>
-                        <option value="3">Severe</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="foraminalStenosis">Foraminal Stenosis</label>
+                    <div class="input-group mb-3">
+                        <div class="col-md-2">                    
+                            <input type="checkbox" name="typeCheck" onclick="onlyOne(this)" value="PE">PE</input>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="resetBtnPE" class="btn btn-secondary" onclick="resetBtn(this)" value="PE" disabled>Reset</button>
+                            <button type="button" id="hideBtnPE" class="btn btn-secondary" onclick="hideLayer(this)" value="PE" disabled>hide</button>
+                            <button type="button" id="resetPosPE" class="btn btn-secondary" onclick="centerPos(this)" value="PE" disabled>Reset</button>
+                        </div>
                     </div>
-                    <select class="form-select small-font" id="foraminalStenosis">
-                        <option selected>None</option>
-                        <option value="1">Mild</option>
-                        <option value="2">Moderate</option>
-                        <option value="3">Severe</option>
-                    </select>
-                </div>
-
-                <!-- Dural/Thecal Sac Compression -->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="discHerniation">Disc Herniation Severity</label>
+                    <div class="input-group mb-3">                    
+                        <div class="col-md-2">                    
+                            <input type="checkbox" name="typeCheck" onclick="onlyOne(this)" value="TS">TS</input>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="resetBtnTS" class="btn btn-secondary" onclick="resetBtn('this')" value="TS" disabled>Reset</button>
+                            <button type="button" id="hideBtnTS" class="btn btn-secondary" onclick="hideLayer(this)" value="TS" disabled>hide</button>
+                            <button type="button" id="resetPosTS" class="btn btn-secondary" onclick="centerPos(this)" value="TS" disabled>Reset</button>
+                        </div>
                     </div>
-                    <select class="form-select small-font" id="discHerniation">
-                        <option selected>None</option>
-                        <option value="1">Protrusion</option>
-                        <option value="2">Extrusion</option>
-                        <option value="3">Sequestration</option>
-                        <option value="4">Bulge</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="discHerniationType">Disc Herniation Type</label>
+                    <div class="input-group mb-3">                    
+                        <div class="col-md-2">                    
+                            <input type="checkbox" name="typeCheck" onclick="onlyOne(this)" value="AAP">AAP</input>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="resetBtnAAP" class="btn btn-secondary" onclick="resetBtn(this)" value="AAP" disabled>Reset</button>
+                            <button type="button" id="hideBtnAAP" class="btn btn-secondary" onclick="hideLayer(this)" value="AAP" disabled>hide</button>
+                            <button type="button" id="resetPosAAP" class="btn btn-secondary" onclick="centerPos(this)" value="AAP" disabled>Reset</button>
+                        </div>
                     </div>
-                    <select class="form-select small-font" id="discHerniationType">
-                        <option selected>None</option>
-                        <option value="1">Central</option>
-                        <option value="2">Left</option>
-                        <option value="3">Right</option>
-                        <option value="4">Bulge</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="annularTear">Annular Tear</label>
-                    </div>
-                    <select class="form-select small-font" id="annularTear">
-                        <option selected>Absent</option>
-                        <option value="1">Present</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="facetHypertrophy">Facet Hypertrophy</label>
-                    </div>
-                    <select class="form-select small-font" id="facetHypertrophy">
-                        <option selected>Absent</option>
-                        <option value="1">Present</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="facetArthropathy">Facet Arthropathy</label>
-                    </div>
-                    <select class="form-select small-font" id="facetArthropathy">
-                        <option selected>Absent</option>
-                        <option value="1">Present</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text fixed-width-label" for="ligamentumFlavumHypertrophy">Ligamentum Flavum Hypertrophy</label>
-                    </div>
-                    <select class="form-select small-font" id="ligamentumFlavumHypertrophy">
-                        <option selected>Absent</option>
-                        <option value="1">Present</option>
-                    </select>
-                </div>
-
-
-
-
+                </div>                
             </div>
+            <script>
 
-        </div>
-     </main>
+                // Initially disable submit button
+                document.getElementById('submitImage').disabled = true;
+                // Initially disable edit button
+                document.getElementById('editImage').disabled = true;
 
+                var canvas = this.__canvas = new fabric.Canvas('canvas_1');
+                canvas.backgroundColor = 'grey';
+                
+                // Zoom in/out function
+                canvas.on('mouse:wheel', function(opt) {
+                    var delta = opt.e.deltaY;
+                    var zoom = canvas.getZoom();
+                    zoom *= 0.999 ** delta;
+                    if (zoom > 20) zoom = 20;
+                    if (zoom < 0.01) zoom = 0.01;
+                    canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                    opt.e.preventDefault();
+                    opt.e.stopPropagation();
+                });
 
+                // locate image
+                function findImages() {
+                    var originImage = document.getElementById("imagePlaceholder1")
+
+                    if (originImage.src) {
+                        if (globalMaskClassPaths.length > 0) {
+                            alert("Ready to render!")
+                            return true
+                        } else {
+                            alert("Please submit the selected image!")
+                            return false
+                        }                        
+                    } else {
+                        alert("Please submit an image to start!")
+                        return false
+                    }
+                }
+                
+                fabric.Object.prototype.transparentCorners = false;
+                fabric.Object.prototype.cornerColor = 'green';
+                fabric.Object.prototype.borderColor = 'red';
+                fabric.Object.prototype.cornerStyle = 'circle';
+                canvas.preserveObjectStacking = false;
+
+                function addBKGtoCanvas() {
+                    var imageOrigin = document.getElementById("imagePlaceholder1")
+                    var imageBKG = new fabric.Image(imageOrigin,
+                    {
+                        left:0,
+                        top:0,
+                        opacity:1
+                    })
+                    imageBKG.scaleToHeight(canvas.height)
+                    canvas.setBackgroundImage(imageBKG,canvas.renderAll.bind(canvas))
+
+                    var filter = new fabric.Image.filters.Invert();
+
+                    ["IVD","PE","TS","AAP"].forEach((item) => {
+                        var tempImg = new fabric.Image(document.getElementById("image" + item),{left:0,top:0,opacity:0,cacheKey:item})
+                        tempImg.scaleToHeight(canvas.height)
+                        tempImg.filters.push(filter);
+                        canvas.add(tempImg)
+                        canvas.setActiveObject(tempImg);
+                    })
+                    canvas.renderAll()
+                }
+
+                function hideLayer(btn) {
+                    var keyValue = btn.value
+                    var objs = canvas._objects
+                    objs.forEach((obj)=>{
+                        //console.log("obj is " + obj.cacheKey)
+                        if (obj.cacheKey==keyValue) {
+                            obj.set({opacity:0.5})
+                            //canvas.bringForward(obj)
+                            canvas.bringToFront(obj)
+                            //console.log("Bring " + obj.cacheKey + " to front!")
+                        } else {
+                            obj.set({opacity:0})
+                            //canvas.sendBackwards(obj)
+                            //console.log("Send " + obj.cacheKey + " to back!")
+                        }
+                    })
+                    canvas.renderAll()
+                }
+
+                function centerPos(btn) {
+                    var keyValue = btn.value
+                    var objs = canvas._objects
+                    objs.forEach((obj)=>{
+                        if (obj.cacheKey==keyValue) {
+                            obj.set({opacity:0})
+                        }
+                    })
+                    canvas.renderAll()
+                }
+            </script>
+        </main>
     </div>
-
-<script>
-
-var globalMaskClassPaths = [];
-var structureLayers = [];
-var mask_path;
-
-function handleImageUpload() {
-    var imageInput = document.getElementById('imageUpload');
-    var submitButton = document.getElementById('submitImage');
-    if (imageInput.files && imageInput.files[0]) {
-        // Enable the submit button
-        submitButton.disabled = false;
-        // Display the uploaded image
-        displayUploadedImage();
-    } else {
-        // Disable the submit button if no image is chosen
-        submitButton.disabled = true;
-    }
-}
-
-function displayUploadedImage() {
-    var input = document.getElementById('imageUpload');
-    var editButton = document.getElementById('editImage');
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-            $('#imagePlaceholder1').attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-        editButton.disabled = false
-    }
-    else {
-        editButton.disabled = true
-    }
-}
-
-function getCSRFToken() {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = jQuery.trim(cookies[i]);
-        if (cookie.substring(0, 'csrftoken'.length + 1) === 'csrftoken=') {
-            return decodeURIComponent(cookie.substring('csrftoken'.length + 1));
-        }
-    }
-    return null;
-}
-
-function processCanvasImage() {
-    var canvas1 = document.getElementById('annotation-canvas1');
-    var canvas2 = document.getElementById('annotation-canvas2');
-    var ctx1 = canvas1.getContext('2d');
-    var ctx2 = canvas2.getContext('2d');
-
-    console.log(ctx2);
-
-
-    var imageData = ctx2.getImageData(0, 0, canvas2.width, canvas2.height);
-
-    // Define the color information for the structures
-    var structureColors = {
-        IVD: [64, 64, 64, 255], // Note: Alpha is out of 255 here
-        PE: [128, 128, 128, 255],
-        TS: [192, 192, 192, 255],
-        AAP: [255, 255, 255, 255]
-    };
-
-    // Function to identify structure based on the clicked color
-    function identifyStructure(pixel) {
-        for (var structure in structureColors) {
-            if (structureColors.hasOwnProperty(structure)) {
-                var color = structureColors[structure];
-                if (pixel[0] === color[0] && pixel[1] === color[1] && pixel[2] === color[2] && pixel[3] === color[3]) {
-                    return structure;
-                }
-            }
-        }
-        return "Unknown Structure";
-    }
-
-    function findMatchingPixels(imageData, targetColor) {
-        let pixels = imageData.data;
-        let width = imageData.width;
-        let matchingPixels = [];
-
-        for (let i = 0; i < pixels.length; i += 4) {
-            let r = pixels[i];
-            let g = pixels[i + 1];
-            let b = pixels[i + 2];
-            let a = pixels[i + 3];
-
-            // Check if the current pixel matches the target color
-            if (r === targetColor[0] && g === targetColor[1] && b === targetColor[2] && a === targetColor[3]) {
-                let x = (i / 4) % width;
-                let y = Math.floor((i / 4) / width);
-                matchingPixels.push({ x, y });
-            }
-        }
-
-        return matchingPixels;
-    }
-
-    function computeBoundingBox(points) {
-        let minX = Infinity;
-        let maxX = -Infinity;
-        let minY = Infinity;
-        let maxY = -Infinity;
-
-        points.forEach(point => {
-            if (point.x < minX) minX = point.x;
-            if (point.x > maxX) maxX = point.x;
-            if (point.y < minY) minY = point.y;
-            if (point.y > maxY) maxY = point.y;
-        });
-
-        return {
-            topLeft: { x: minX, y: minY },
-            bottomRight: { x: maxX, y: maxY }
-        };
-    }
-
-
-    Object.keys(structureColors).forEach(function (structure) {
-        var color = structureColors[structure];
-        var matchingPixels = findMatchingPixels(imageData, color);
-        var boundingBox = computeBoundingBox(matchingPixels);
-
-        console.log(matchingPixels);
-
-        // If you want to draw a bounding box for each structure
-        var rect = new fabric.Rect({
-            left: boundingBox.topLeft.x,
-            top: boundingBox.topLeft.y,
-            width: boundingBox.bottomRight.x - boundingBox.topLeft.x,
-            height: boundingBox.bottomRight.y - boundingBox.topLeft.y,
-            fill: 'rgba(0,0,0,0)', // transparent fill
-            stroke: 'red',
-            strokeWidth: 2,
-            selectable: true // If you don't want it to be selectable
-        });
-
-        // Add the rectangle to the fabric canvas
-        canvas2.add(rect);
-    });
-
-    canvas2.renderAll();
-
-}
-
-
-
-function overlayImage() {
-    var canvas1 = document.getElementById('annotation-canvas1');
-    var canvas2 = document.getElementById('annotation-canvas2');
-    var ctx1 = canvas1.getContext('2d');
-    var ctx2 = canvas2.getContext('2d');
-    var mriImage = new Image();
-    var mask = new Image();
-    // Clear the canvas before drawing new images
-    ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
-
-    // Load and draw the MRI image first
-    mriImage.onload = function() {
-        canvas1.width = mriImage.width;
-        canvas1.height = mriImage.height;
-        canvas2.width = mriImage.width;
-        canvas2.height = mriImage.height;
-
-        ctx1.drawImage(mriImage, 0, 0);
-
-        ctx1.globalAlpha = 0.5;
-        ctx1.drawImage(mask, 0, 0);
-        ctx1.globalAlpha = 1.0;
-        ctx2.drawImage(mask, 0, 0);
-
-
-
-    };
-
-    // Set the source of the MRI image
-    mriImage.src = $('#imagePlaceholder1').attr('src');
-    mask.src = mask_path;
-
-    processCanvasImage();
-}
-
-
-
-function uploadImage() {
-    var formData = new FormData();
-    formData.append('image', $('#imageUpload')[0].files[0]);
-    var csrftoken = getCSRFToken();
-
-    $.ajax({
-        type: 'POST',
-        url: '/api/process-image/',
-        data: formData,
-        processData: false,
-        contentType: false,
-        beforeSend: function(xhr) {
-            if (csrftoken) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        },
-        success: function(response) {
-            // Extract relevant data from the response
-            var maskUrl = response.mask_url;
-            // Second API call: view_mask
-            $.ajax({
-                type: 'POST',
-                url: '/api/view-mask/',
-                data: { 'mask_url': maskUrl },  // Pass relevant data to the second API
-                success: function(viewMaskResponse) {
-                    // Handle the response of the second API as needed
-                    $('#imagePlaceholder2').attr('src', viewMaskResponse.mask_url)
-                    globalMaskClassPaths = viewMaskResponse.mask_class_paths;
-                    mask_path = viewMaskResponse.mask_url;
-                },
-                error: function() {
-                    console.error('Error calling view_mask API');
-                }
-            });
-        },
-        error: function() {
-            console.error('Error processing image');
-        }
-    });
-}
-
-
-
-// Initially disable submit button
-document.getElementById('submitImage').disabled = true;
-// Initially disable edit button
-document.getElementById('editImage').disabled = true;
-
-function selectStructure(event) {
-    var x = event.offsetX;
-    var y = event.offsetY;
-
-    // Check each layer to find which one is selected
-    for (var i = 0; i < structureLayers.length; i++) {
-        var layer = structureLayers[i];
-        var pixelData = ctx.getImageData(x, y, 1, 1).data;
-
-        // Check if the clicked pixel is not transparent in this layer
-        if (pixelData[3] !== 0) {
-            console.log('Structure selected: Layer ' + layer.index);
-            highlightStructure(layer.index);
-            break; // Stop checking after the first match
-        }
-    }
-}
-
-function highlightStructure(selectedIndex) {
-    // Clear the canvas and redraw everything
-    // Highlight the selected structure in some way
-    // Your logic for highlighting the selected structure goes here
-}
-
-
-
-</script>
-
-
 </div>
-
 
 {% endblock %}
