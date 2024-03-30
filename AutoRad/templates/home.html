@@ -294,8 +294,14 @@
                             </p>
                             <p>
                                 <label>
-                                    <span>Scale:</span>
-                                    <input type="range" id="scale-control" value="1" min="0.1" max="2">
+                                    <span>ScaleX:</span>
+                                    <input type="range" id="scaleX-control" value="1" min="0.1" max="2">
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <span>ScaleY:</span>
+                                    <input type="range" id="scaleY-control" value="1" min="0.1" max="2">
                                 </label>
                             </p>
                             {% comment %} <p>
@@ -378,6 +384,7 @@
                 });
 
                 fabric.Object.prototype.transparentCorners = false;
+                fabric.Object.prototype.centeredScaling = true;
                 fabric.Object.prototype.cornerColor = 'green';
                 fabric.Object.prototype.borderColor = 'red';
                 fabric.Object.prototype.cornerStyle = 'circle';
@@ -394,6 +401,7 @@
                     imageBKG.scaleToHeight(canvas.height)
                     canvas.setBackgroundImage(imageBKG,canvas.renderAll.bind(canvas))
 
+                    /*
                     var filter = new fabric.Image.filters.Invert();
 
                     ["IVD","PE","TS","AAP"].forEach((item) => {
@@ -403,37 +411,92 @@
                         canvas.add(tempImg)
                         canvas.setActiveObject(tempImg);
                     })
+                    */
                     canvas.renderAll()
                 }
 
-                function myfunc() {
-                    console.log("success!")
+                function showImg(btnValue) {
+                    if (btnValue=="") {
+                        console.log("Reset button with empty value")
+                        return
+                    }
+                    var tempImgParms = []
+                    var tempImgSrc = ""
+                    if (btnValue=="IVD") {
+                        tempImgParms = imgsParmsHolders[0]
+                        tempImgSrc = globalMaskClassPaths[0]
+                    }
+                    if (btnValue=="PE") {
+                        tempImgParms = imgsParmsHolders[1]
+                        tempImgSrc = globalMaskClassPaths[1]
+                    }
+                    if (btnValue=="TS") {
+                        tempImgParms = imgsParmsHolders[2]
+                        tempImgSrc = globalMaskClassPaths[2]
+                    }
+                    if (btnValue=="AAP") {
+                        tempImgParms = imgsParmsHolders[3]
+                        tempImgSrc = globalMaskClassPaths[3]
+                    }
+
+                    console.log(btnValue)
+                    console.log(tempImgParms)
+                    console.log(tempImgSrc)
+
+                    var tempImg = new fabric.Image(document.getElementById("image" + btnValue),
+                        {   
+                            angle:tempImgParms[0],
+                            left:tempImgParms[1],
+                            top:tempImgParms[2],
+                            scaleX:tempImgParms[3],
+                            scaleY:tempImgParms[4],
+                            opacity:0.5,
+                            cacheKey:btnValue
+                        })
+                    var filter = new fabric.Image.filters.Invert();
+                    //tempImg.scaleToHeight(canvas.height)
+                    tempImg.filters.push(filter);
+                    canvas.add(tempImg)
+                    canvas.setActiveObject(tempImg);
+                    canvas.renderAll()
                 }
+
+                //remove canvas' image
+                function removeImg(btnValue) {
+                    var tempImg = canvas.item(0)
+                    canvas.remove(tempImg)
+                    canvas.renderAll()
+                }                    
 
                 // reset image position
                 function resetImg(btnValue) {
                     if (btnValue=="") {
                         console.log("Reset button with empty value")
+                        canvas.renderAll()
                         return
                     }
                     if (btnValue=="IVD") {
-                        imgsParmsHolders[0]=[0,0,0,0]
+                        imgsParmsHolders[0]=[0,0,0,2,2]
                         console.log(imgsParmsHolders[0])
+                        canvas.renderAll()
                         return
                     }
                     if (btnValue=="PE") {
-                        imgsParmsHolders[1]=[0,0,0,0]
-                        console.log(imgsParmsHolders[0])
+                        imgsParmsHolders[1]=[0,0,0,2,2]
+                        console.log(imgsParmsHolders[1])
+                        canvas.renderAll()
                         return
                     }
                     if (btnValue=="TS") {
-                        imgsParmsHolders[2]=[0,0,0,0]
-                        console.log(imgsParmsHolders[0])
+                        imgsParmsHolders[2]=[0,0,0,2,2]
+                        console.log(imgsParmsHolders[2])
+                        canvas.renderAll()
                         return
                     }
                     if (btnValue=="AAP") {
-                        imgsParmsHolders[3]=[0,0,0,0]
-                        console.log(imgsParmsHolders[0])
+                        imgsParmsHolders[3]=[0,0,0,2,2]
+                        console.log(imgsParmsHolders[3])
+                        canvas.renderAll()
                         return
                     }
                 }
@@ -444,10 +507,26 @@
                         console.log("Save button with empty value")
                         return
                     }
+                    var tempImg = canvas.item(0)
+                    var val = tempImg.cacheKey
+                    var imgParms = [tempImg.angle,tempImg.left,tempImg.top,tempImg.scaleX,tempImg.scaleY]
+                    if (val=="IVD") imgsParmsHolders[0]=imgParms
+                    if (val=="PE") imgsParmsHolders[1]=imgParms
+                    if (val=="TS") imgsParmsHolders[2]=imgParms
+                    if (val=="AAP") imgsParmsHolders[3]=imgParms
+                    console.log(imgParms)
+                }
+
+                function saveImgV2(btnValue) {
+                    if (btnValue=="") {
+                        console.log("Save button with empty value")
+                        return
+                    }
                     var imgAngle = document.getElementById("angle-control").value
                     var imgLeft = document.getElementById("left-control").value
                     var imgTop = document.getElementById("top-control").value
-                    var imgScale = document.getElementById("scale-control").value
+                    var imgScaleX = document.getElementById("scaleX-control").value
+                    var imgScaleY = document.getElementById("scaleY-control").value
 
                     if (btnValue=="IVD") {
                         imgsParmsHolders[0]=[imgAngle,imgLeft,imgTop,imgScale]

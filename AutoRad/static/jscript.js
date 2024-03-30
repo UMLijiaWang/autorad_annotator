@@ -118,11 +118,17 @@ function initalizeImages() {
         return
     }
 
-    // Angle, Left, Top, Scale
-    imgParmsIVD = [0,0,0,0]
-    imgParmsPE = [0,0,0,0]
-    imgParmsTS = [0,0,0,0]
-    imgParmsAAP = [0,0,0,0]
+    
+    $('#imageIVD').attr('src', globalMaskClassPaths[0])
+    $('#imagePE').attr('src', globalMaskClassPaths[1])
+    $('#imageTS').attr('src', globalMaskClassPaths[2])
+    $('#imageAAP').attr('src', globalMaskClassPaths[3])
+
+    // Angle, Left, Top, ScaleX, ScaleY
+    imgParmsIVD = [0,0,0,2,2]
+    imgParmsPE = [0,0,0,2,2]
+    imgParmsTS = [0,0,0,2,2]
+    imgParmsAAP = [0,0,0,2,2]
     imgsParmsHolders = [imgParmsIVD,imgParmsPE,imgParmsTS,imgParmsAAP]
 }
 
@@ -159,7 +165,8 @@ function onlyOne(checkbox) {
         document.getElementById("image" + checkbox.value).hidden = false
         document.getElementById("hideBtn" + checkbox.value).disabled = false
         document.getElementById("resetPos" + checkbox.value).disabled = false
-        // hideLayer(checkbox)
+
+
     } else {
         document.getElementById("resetBtn" + checkbox.value).disabled = true
         document.getElementById("image" + checkbox.value).hidden = true
@@ -179,14 +186,17 @@ function onlyOneV2(checkbox) {
         if (item !== checkbox) {
             item.checked = false
             resetBtn.value = ""
-            saveBtn.value = ""            
+            saveBtn.value = ""
+            removeImg(checkbox.value)            
         }
     })
     if (checkbox.checked) {
         resetBtn.value = checkbox.value
         saveBtn.value = checkbox.value
+        showImg(checkbox.value)
     } else {
         resetBtn.value = ""
-        saveBtn.value = ""  
+        saveBtn.value = "" 
+        removeImg(checkbox.value)
     }
 }
