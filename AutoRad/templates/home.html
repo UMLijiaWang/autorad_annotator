@@ -268,8 +268,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnIVD" class="btn btn-secondary" onclick="resetBtn(this)" value="IVD" disabled>Reset</button>
-                            <button type="button" id="hideBtnIVD" class="btn btn-secondary" onclick="hideLayer(this)" value="IVD" disabled>hide</button>
-                            <button type="button" id="resetPosIVD" class="btn btn-secondary" onclick="centerPos(this)" value="IVD" disabled>Reset</button>
+                            <button type="button" id="hideBtnIVD" class="btn btn-secondary" onclick="hideLayer(this)" value="IVD" disabled>Show</button>
+                            <button type="button" id="resetPosIVD" class="btn btn-secondary" onclick="centerPos(this)" value="IVD" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">
@@ -278,8 +278,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnPE" class="btn btn-secondary" onclick="resetBtn(this)" value="PE" disabled>Reset</button>
-                            <button type="button" id="hideBtnPE" class="btn btn-secondary" onclick="hideLayer(this)" value="PE" disabled>hide</button>
-                            <button type="button" id="resetPosPE" class="btn btn-secondary" onclick="centerPos(this)" value="PE" disabled>Reset</button>
+                            <button type="button" id="hideBtnPE" class="btn btn-secondary" onclick="hideLayer(this)" value="PE" disabled>Show</button>
+                            <button type="button" id="resetPosPE" class="btn btn-secondary" onclick="centerPos(this)" value="PE" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">                    
@@ -288,8 +288,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnTS" class="btn btn-secondary" onclick="resetBtn('this')" value="TS" disabled>Reset</button>
-                            <button type="button" id="hideBtnTS" class="btn btn-secondary" onclick="hideLayer(this)" value="TS" disabled>hide</button>
-                            <button type="button" id="resetPosTS" class="btn btn-secondary" onclick="centerPos(this)" value="TS" disabled>Reset</button>
+                            <button type="button" id="hideBtnTS" class="btn btn-secondary" onclick="hideLayer(this)" value="TS" disabled>Show</button>
+                            <button type="button" id="resetPosTS" class="btn btn-secondary" onclick="centerPos(this)" value="TS" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">                    
@@ -298,8 +298,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnAAP" class="btn btn-secondary" onclick="resetBtn(this)" value="AAP" disabled>Reset</button>
-                            <button type="button" id="hideBtnAAP" class="btn btn-secondary" onclick="hideLayer(this)" value="AAP" disabled>hide</button>
-                            <button type="button" id="resetPosAAP" class="btn btn-secondary" onclick="centerPos(this)" value="AAP" disabled>Reset</button>
+                            <button type="button" id="hideBtnAAP" class="btn btn-secondary" onclick="hideLayer(this)" value="AAP" disabled>Show</button>
+                            <button type="button" id="resetPosAAP" class="btn btn-secondary" onclick="centerPos(this)" value="AAP" disabled>Hide</button>
                         </div>
                     </div>
                 </div>                
@@ -348,7 +348,7 @@
                 fabric.Object.prototype.cornerColor = 'green';
                 fabric.Object.prototype.borderColor = 'red';
                 fabric.Object.prototype.cornerStyle = 'circle';
-                canvas.preserveObjectStacking = false;
+                canvas.preserveObjectStacking = true;
 
                 function addBKGtoCanvas() {
                     var imageOrigin = document.getElementById("imagePlaceholder1")
@@ -380,13 +380,12 @@
                         //console.log("obj is " + obj.cacheKey)
                         if (obj.cacheKey==keyValue) {
                             obj.set({opacity:0.5})
-                            //canvas.bringForward(obj)
                             canvas.bringToFront(obj)
-                            //console.log("Bring " + obj.cacheKey + " to front!")
+                            console.log("Bring " + obj.cacheKey + " to front!")
                         } else {
                             obj.set({opacity:0})
-                            //canvas.sendBackwards(obj)
-                            //console.log("Send " + obj.cacheKey + " to back!")
+                            canvas.sendBackwards(obj)
+                            console.log("Send " + obj.cacheKey + " to back!")
                         }
                     })
                     canvas.renderAll()
