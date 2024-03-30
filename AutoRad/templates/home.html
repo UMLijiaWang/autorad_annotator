@@ -66,11 +66,11 @@
                         </div>
 
                         <!-- Image Placeholder 2 -->
-                        <div class="col-md-6 mb-3">
+                        {% comment %} <div class="col-md-6 mb-3">
                             <div class="border rounded d-flex justify-content-center align-items-center" style="height: 320px; width: auto;">
                                 <img id="imagePlaceholder2" class="border rounded" style="height: 320px;">
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     <!-- Divider -->
                     <hr class="my-2">
@@ -262,14 +262,64 @@
                 
                 <!-- Column for check box and other button-->
                 <div class="col-md-4">
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3" style="display: inline-block; padding: 0 10px; margin-top: .5em; margin-left: 10px; margin-right: -5px;">
+                        <p>
+                            <input type="checkbox" name="typeCheck" id="check-ivd" onclick="onlyOneV2(this)" value="IVD">IVD</input>
+                            <input type="checkbox" name="typeCheck" id="check-pe" onclick="onlyOneV2(this)" value="PE">PE</input>                        
+                            <input type="checkbox" name="typeCheck" id="check-ts" onclick="onlyOneV2(this)" value="TS">TS</input>
+                            <input type="checkbox" name="typeCheck" id="check-aap" onclick="onlyOneV2(this)" value="AAP">AAP</input>
+                        </p>
+                        <p>
+                            <button type="button" id="resetBtn" class="btn btn-secondary" onclick="resetImg(this.value)" value="">Reset</button>
+                            <button type="button" id="saveBtn" class="btn btn-secondary" onclick="saveImg(this.value)" value="">Save</button>
+                        </p>
+                        <div class="col-md-4" style="display: inline-block; padding: 0 10px; margin-top: .5em; margin-left: 10px; margin-right: -5px; ">
+                            <p>
+                                <label>
+                                    <span>Angle:</span>
+                                    <input type="range" id="angle-control" value="0" min="0" max="0">
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <span>Left:</span>
+                                    <input type="range" id="left-control" value="0" min="0" max="640">
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <span>Top:</span>
+                                    <input type="range" id="top-control" value="0" min="0" max="640">
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <span>Scale:</span>
+                                    <input type="range" id="scale-control" value="1" min="0.1" max="2">
+                                </label>
+                            </p>
+                            {% comment %} <p>
+                                <label>
+                                    <span>board color:</span>
+                                    <input type="color" id="boardcolor" style="display: block">
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <span>corner color:</span>
+                                    <input type="color" id="cornercolor" style="display: block">
+                                </label>
+                            </p> {% endcomment %}
+                        </div>                        
+                    </div>
+                    {% comment %} <div class="input-group mb-3">
                         <div class="col-md-2">                    
                             <input type="checkbox" name="typeCheck" onclick="onlyOne(this)" value="IVD">IVD</input>
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnIVD" class="btn btn-secondary" onclick="resetBtn(this)" value="IVD" disabled>Reset</button>
-                            <button type="button" id="hideBtnIVD" class="btn btn-secondary" onclick="hideLayer(this)" value="IVD" disabled>Show</button>
-                            <button type="button" id="resetPosIVD" class="btn btn-secondary" onclick="centerPos(this)" value="IVD" disabled>Hide</button>
+                            <button type="button" id="hideBtnIVD" class="btn btn-secondary" onclick="show(this)" value="IVD" disabled>Show</button>
+                            <button type="button" id="resetPosIVD" class="btn btn-secondary" onclick="hide(this)" value="IVD" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">
@@ -278,8 +328,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnPE" class="btn btn-secondary" onclick="resetBtn(this)" value="PE" disabled>Reset</button>
-                            <button type="button" id="hideBtnPE" class="btn btn-secondary" onclick="hideLayer(this)" value="PE" disabled>Show</button>
-                            <button type="button" id="resetPosPE" class="btn btn-secondary" onclick="centerPos(this)" value="PE" disabled>Hide</button>
+                            <button type="button" id="hideBtnPE" class="btn btn-secondary" onclick="show(this)" value="PE" disabled>Show</button>
+                            <button type="button" id="resetPosPE" class="btn btn-secondary" onclick="hide(this)" value="PE" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">                    
@@ -288,8 +338,8 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnTS" class="btn btn-secondary" onclick="resetBtn('this')" value="TS" disabled>Reset</button>
-                            <button type="button" id="hideBtnTS" class="btn btn-secondary" onclick="hideLayer(this)" value="TS" disabled>Show</button>
-                            <button type="button" id="resetPosTS" class="btn btn-secondary" onclick="centerPos(this)" value="TS" disabled>Hide</button>
+                            <button type="button" id="hideBtnTS" class="btn btn-secondary" onclick="show(this)" value="TS" disabled>Show</button>
+                            <button type="button" id="resetPosTS" class="btn btn-secondary" onclick="hide(this)" value="TS" disabled>Hide</button>
                         </div>
                     </div>
                     <div class="input-group mb-3">                    
@@ -298,10 +348,10 @@
                         </div>
                         <div class="col-md-2">
                             <button type="button" id="resetBtnAAP" class="btn btn-secondary" onclick="resetBtn(this)" value="AAP" disabled>Reset</button>
-                            <button type="button" id="hideBtnAAP" class="btn btn-secondary" onclick="hideLayer(this)" value="AAP" disabled>Show</button>
-                            <button type="button" id="resetPosAAP" class="btn btn-secondary" onclick="centerPos(this)" value="AAP" disabled>Hide</button>
+                            <button type="button" id="hideBtnAAP" class="btn btn-secondary" onclick="show(this)" value="AAP" disabled>Show</button>
+                            <button type="button" id="resetPosAAP" class="btn btn-secondary" onclick="hide(this)" value="AAP" disabled>Hide</button>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                 </div>                
             </div>
             <script>
@@ -321,29 +371,12 @@
                     zoom *= 0.999 ** delta;
                     if (zoom > 20) zoom = 20;
                     if (zoom < 0.01) zoom = 0.01;
-                    canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                    //canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                    canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), zoom);
                     opt.e.preventDefault();
                     opt.e.stopPropagation();
                 });
 
-                // locate image
-                function findImages() {
-                    var originImage = document.getElementById("imagePlaceholder1")
-
-                    if (originImage.src) {
-                        if (globalMaskClassPaths.length > 0) {
-                            alert("Ready to render!")
-                            return true
-                        } else {
-                            alert("Please submit the selected image!")
-                            return false
-                        }                        
-                    } else {
-                        alert("Please submit an image to start!")
-                        return false
-                    }
-                }
-                
                 fabric.Object.prototype.transparentCorners = false;
                 fabric.Object.prototype.cornerColor = 'green';
                 fabric.Object.prototype.borderColor = 'red';
@@ -373,7 +406,73 @@
                     canvas.renderAll()
                 }
 
-                function hideLayer(btn) {
+                function myfunc() {
+                    console.log("success!")
+                }
+
+                // reset image position
+                function resetImg(btnValue) {
+                    if (btnValue=="") {
+                        console.log("Reset button with empty value")
+                        return
+                    }
+                    if (btnValue=="IVD") {
+                        imgsParmsHolders[0]=[0,0,0,0]
+                        console.log(imgsParmsHolders[0])
+                        return
+                    }
+                    if (btnValue=="PE") {
+                        imgsParmsHolders[1]=[0,0,0,0]
+                        console.log(imgsParmsHolders[0])
+                        return
+                    }
+                    if (btnValue=="TS") {
+                        imgsParmsHolders[2]=[0,0,0,0]
+                        console.log(imgsParmsHolders[0])
+                        return
+                    }
+                    if (btnValue=="AAP") {
+                        imgsParmsHolders[3]=[0,0,0,0]
+                        console.log(imgsParmsHolders[0])
+                        return
+                    }
+                }
+
+                // Save image position and angle
+                function saveImg(btnValue) {
+                    if (btnValue=="") {
+                        console.log("Save button with empty value")
+                        return
+                    }
+                    var imgAngle = document.getElementById("angle-control").value
+                    var imgLeft = document.getElementById("left-control").value
+                    var imgTop = document.getElementById("top-control").value
+                    var imgScale = document.getElementById("scale-control").value
+
+                    if (btnValue=="IVD") {
+                        imgsParmsHolders[0]=[imgAngle,imgLeft,imgTop,imgScale]
+                        console.log(imgsParmsHolders[0])
+                        return
+                    }
+                    if (btnValue=="PE") {
+                        imgsParmsHolders[1]=[imgAngle,imgLeft,imgTop,imgScale]
+                        console.log(imgsParmsHolders[1])
+                        return
+                    }
+                    if (btnValue=="TS") {
+                        imgsParmsHolders[2]=[imgAngle,imgLeft,imgTop,imgScale]
+                        console.log(imgsParmsHolders[2])
+                        return
+                    }
+                    if (btnValue=="AAP") {
+                        imgsParmsHolders[3]=[imgAngle,imgLeft,imgTop,imgScale]
+                        console.log(imgsParmsHolders[3])
+                        return
+                    }
+                }
+
+                /*
+                function show(btn) {
                     var keyValue = btn.value
                     var objs = canvas._objects
                     objs.forEach((obj)=>{
@@ -391,7 +490,7 @@
                     canvas.renderAll()
                 }
 
-                function centerPos(btn) {
+                function hide(btn) {
                     var keyValue = btn.value
                     var objs = canvas._objects
                     objs.forEach((obj)=>{
@@ -401,6 +500,7 @@
                     })
                     canvas.renderAll()
                 }
+                */
             </script>
         </main>
     </div>
